@@ -5,12 +5,22 @@ import datetime
 
 # 1. Configurar la conexión a MySQL (Reemplaza con tus datos reales)
 usuario = 'avnadmin'
-contrasena = '<redacted>'
-host = 'localhost'
-base_datos = 'mysql-361b747a-piunicorn2026.a.aivencloud.com'
+contrasena = 'AVNS_3nrYLzTlHETLzfbvu88'
+host = 'mysql-361b747a-piunicorn2026.a.aivencloud.com'
+puerto = '26898'
+base_datos = 'defaultdb'
 
-conexion = f'mysql+pymysql://{usuario}:{contrasena}@{host}/{base_datos}'
-engine = create_engine(conexion)
+uri_real = f'mysql+pymysql://{usuario}:{contrasena}@{host}:{puerto}/{base_datos}'
+
+# Creamos el motor agregando el parámetro de seguridad SSL que Aiven exige
+try:
+    engine = create_engine(uri_real, connect_args={"ssl": {}})
+    # Intentamos una conexión de prueba
+    with engine.connect() as conn:
+        pass 
+except Exception as e:
+    st.error(f"Error de conexión: {e}")
+
 
 # 2. Diseño de la página web
 st.title('💸 Registro de Gastos de Ingeniería')
